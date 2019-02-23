@@ -1,1 +1,1 @@
-# stateless-auth-with-springboot
+stateless authentication with Jersey, Springboot and Mongodb
