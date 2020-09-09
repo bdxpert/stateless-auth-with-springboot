@@ -1,5 +1,6 @@
 package com.stateless.service;
 
+import com.stateless.service.controllers.SearchController;
 import com.stateless.service.controllers.UserController;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +18,7 @@ public class JerseyConfig extends ResourceConfig {
 
 
         register(UserController.class);
-
+        register(SearchController.class);
 
 
     }

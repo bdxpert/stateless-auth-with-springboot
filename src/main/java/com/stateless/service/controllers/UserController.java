@@ -6,6 +6,8 @@ import com.stateless.service.exceptions.AppException;
 import com.stateless.service.extra.UserLogin;
 import com.stateless.service.manager.ErrorResponseManager;
 import com.stateless.service.manager.UserManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,10 +21,16 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -32,10 +40,7 @@ import java.util.Set;
 @Path("/users")
 public class UserController {
     private static Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-    /*******************************
-     * user login
-     * EndPoint:api/v1/users/login
-     **********************************/
+    private final Logger log = LoggerFactory.getLogger(getClass());
     @Autowired
     private UserManager userManager;
     @Autowired
@@ -47,7 +52,7 @@ public class UserController {
     @Produces("application/json")
     public Response userRegisterAction(User user, @Context HttpServletRequest requestContext) throws AppException, Exception {
 
-        LinkedHashMap<Object, Object> serviceResponse = new LinkedHashMap<Object, Object>();
+        Map<Object, Object> serviceResponse = new HashMap<Object, Object>();
 
         Set<ConstraintViolation<Object>> validateErrors = validator.validate(user);
         if (validateErrors.isEmpty()) {
@@ -58,14 +63,17 @@ public class UserController {
             return Response.status(HttpServletResponse.SC_BAD_REQUEST).entity(ErrorResponseManager.buildValidationErrors(validateErrors)).build();
         }
     }
-
+    /*******************************
+     * user login
+     * EndPoint:api/v1/users/login
+     **********************************/
     @POST
     @Path("/login")
     @Consumes("application/json")
     @Produces("application/json")
     public Response userLoginAction(UserLogin userLogin, @Context HttpServletRequest requestContext) throws AppException, Exception {
 
-        LinkedHashMap<Object, Object> serviceResponse = new LinkedHashMap<Object, Object>();
+        Map<Object, Object> serviceResponse = new HashMap<Object, Object>();
 
         Set<ConstraintViolation<Object>> validateErrors = validator.validate(userLogin);
         if (validateErrors.isEmpty()) {
@@ -90,7 +98,7 @@ public class UserController {
     @Produces("application/json")
     public Response userLoginAction(@PathParam("id") String userId, @Context HttpServletRequest requestContext) throws AppException {
 
-        LinkedHashMap<Object, Object> serviceResponse = new LinkedHashMap<Object, Object>();
+        Map<Object, Object> serviceResponse = new HashMap<Object, Object>();
 
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getDetails();
         serviceResponse.put("user", user);
